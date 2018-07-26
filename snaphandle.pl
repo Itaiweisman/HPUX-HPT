@@ -2,7 +2,6 @@ use REST::Client;
 use JSON;
 use MIME::Base64;
 use Data::Dumper;
-use Exporter qw(import);
 
 sub getInfiniBoxSingleObjectByName {
         my $host=shift;
@@ -38,8 +37,10 @@ sub getInfiniBoxSingleObjectByName {
                 return {};
                 }
         #return @result;
-
-	return $result[0][0];
+	%res=%{$result[0][0]};
+	return $res{'id'};
+	#print keys(%res);
+	#return $result[0][0];
 }
 
 
@@ -51,20 +52,21 @@ sub CreateSnapshot {
     my $id=shift;
     my $snapname=shift;
     #$DevPword=$passowrd;
-    our $headers = {Accept => 'application/json', Authorization => 'Basic ' . encode_base64($user . ':' . $password)};
-    our $json_data = (
-                 {
-                        parent_id => $id,
-                        snapname => "testhost",
-
-                }
+    my $headers = {Content-Type => 'application/json',  Authorization => 'Basic ' . encode_base64($user . ':' . $password)};
+	print "headers are $headers \n";
+    my %json_data = (
+                        "parent_id" => $id,
+                        "name" => $snapname
         );
     my $data = encode_json(\%json_data);
-
+	print "data is $data \n";
     my $uri="/api/rest/volumes/";
         my $post = REST::Client->new();
+	$post->addHeader('Content-Type', 'application/json');
+	$post->addHeader('Accept', 'application/json');
+	$post->addHeader('Authorization', 'Basic ' . encode_base64($user . ':' . $password));
         $post->setHost("http://$host");
-        $post->POST ( $uri,$data, $headers);
+        $post->POST ( $uri,$data);
         $ok = eval {$response = from_json($post->responseContent());1};
         if (! $ok ) {
          print "Caught Error - Can't get response from $host \n";
@@ -105,7 +107,7 @@ sub SnapMap {
                 }
         );
     my $data = encode_json(\%json_data);
-
+	print "Data is $data \n";
     my $uri="/api/rest/hosts/".$id."/luns";
         my $post = REST::Client->new();
         $post->setHost("http://$host");
@@ -133,16 +135,17 @@ sub SnapMap {
                 }
         return 1;
 }
-usage {
-    print "Usage: \n"
-    print "Create a snapshot: \n"
-    print "./snaphandle create <volume name> <snapshot name> \n"
-    print "Map a snapshot to a host: \n"
-    print "./snaphandle map <snapshot name> <host name>"
+sub usage {
+    print "Usage: \n";
+    print "Create a snapshot: \n";
+    print "./snaphandle create <volume name> <snapshot name> \n";
+    print "Map a snapshot to a host: \n";
+    print "./snaphandle map <snapshot name> <host name> \n\n\n\n";
 }
 usage();
 $id=getInfiniBoxSingleObjectByName('ibox1499','iscsi','123456','volumes','itai');
 print "ID is $id \n";
+CreateSnapshot('ibox1499','iscsi','123456',$id,'hpux-snap');
 ### Program starts here
 #my ($volume, $action, $host_or_name)=@ARGV;
 #switch ($action) {
