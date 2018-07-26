@@ -140,12 +140,14 @@ usage {
     print "Map a snapshot to a host: \n"
     print "./snaphandle map <snapshot name> <host name>"
 }
-
+usage();
+$id=getInfiniBoxSingleObjectByName('ibox1499','iscsi','123456','volumes','itai');
+print "ID is $id \n";
 ### Program starts here
-my ($volume, $action, $host)=@argv;
-switch ($action) {
-    case "create" {}
-    case "map" {}
-    else {usage() ; exit 0; }
-} 
+#my ($volume, $action, $host_or_name)=@ARGV;
+#switch ($action) {
+ #   case "create" {snap_create($volume, $name, )}
+ #   case "map" {}
+ #   else {usage() ; exit 0; }
+#} 
 
