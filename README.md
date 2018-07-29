@@ -1,6 +1,10 @@
 # INFINIDAT Snapshot Handling Utility for HPUX
-## Written By Itai Weisman
+## Written By Itai Weisman, Solution Engineering Team Leader, INFINIDAT.
 
+### Change Control
+Version | Who	| What | When 
+---- | ---- | ---------- | ------------- 
+1.0	| Itai Weisman | Gensis	| July 29th, 2018 
 ### Usage:
 
 #### For Creating Snapshot 
