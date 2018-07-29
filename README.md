@@ -26,9 +26,9 @@ Box name, user and password will be asked
 
 
 ## Modules in use:
-REST::Client
-JSON
-MIME::Base64
-Data::Dumper
-Switch
-Term::ReadKey
+REST::Client, 
+JSON, 
+MIME::Base64, 
+Data::Dumper, 
+Switch, 
+Term::ReadKey, 
