@@ -25,7 +25,7 @@ perl ./set_creds.pl
 Box name, user and password will be asked
 
 
-## Modules in use:
+## Modules In Use
 REST::Client, 
 JSON, 
 MIME::Base64, 
