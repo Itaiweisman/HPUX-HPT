@@ -39,7 +39,6 @@ if (! $password) { die "invalid password  \n" };
 
 $enc_password=encode_base64($password);
 chomp $enc_password;
-print "enc_password is >$enc_password< \n";
 $passfile="./.". $box .".sec";
 open(F,">",$passfile);
 print F "$user $enc_password";
