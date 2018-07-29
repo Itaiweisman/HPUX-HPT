@@ -20,7 +20,7 @@ perl ./snaphandle.pl create <ibox_name> <snapshot name> <host name>
 
 ### Setting Credentails 
 ```
-./set_creds.pl
+perl ./set_creds.pl
 ````
 Box name, user and password will be asked
 

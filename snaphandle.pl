@@ -1,3 +1,16 @@
+# INFINIDAT Snapshot Handling Utility for HPUX
+# Credentials Saver Utility
+## Written By Itai Weisman, Solution Engineering Team Leader, INFINIDAT.
+### Change Control
+#Version | Who          | What       | When
+#------- | ------------ | ---------- | -------------
+#1.0     | Itai Weisman | Gensis     | July 29th, 2018
+### Usage:
+#perl ./set_creds.pl
+#Box name, user and password will be asked
+#
+
+
 use REST::Client;
 use JSON;
 use MIME::Base64;
