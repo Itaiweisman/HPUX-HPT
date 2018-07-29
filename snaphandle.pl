@@ -175,18 +175,7 @@ sub usage {
     print "Map a snapshot to a host: \n";
     print "./snaphandle map <ibox_name> <snapshot name> <host name> \n\n\n\n";
 }
-#usage();
-#$box=shift;
 
-#$credi=get_ibox_creds($box);
-#%creds=%{$credi};
-#print "creds - $creds{'user'} $creds{'password'} \n";
-#$id=getInfiniBoxSingleObjectByName('ibox1499',$creds{'user'},$creds{'password'},'volumes','itai');
-#$host_id=getInfiniBoxSingleObjectByName('ibox1499',$creds{'user'},$creds{'password'},'hosts','kuku');
-#print "ID is $id ; host ID is $host_id \n";
-#$snap_id=CreateSnapshot('ibox1499',$creds{'user'},$creds{'password'},$id,'hpux1-snap');
-#print "snap ID is $snap_id \n";
-#SnapMap('ibox1499',$creds{'user'},$creds{'password'},$host_id,$snap_id);
 
 ### Program starts here
 my ($box, $action, $item, $item_b)=@ARGV;
