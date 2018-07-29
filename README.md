@@ -4,11 +4,27 @@
 ### Usage:
 
 #### For Creating Snapshot 
-''''
-./snaphandle create <ibox_name> <volume name> <snapshot name>
-''''
+````
+perl ./snaphandle.pl create <ibox_name> <volume name> <snapshot name>
+````
 
 #### For Mapping Snapshot To Host 
-''''
-./snaphandle create <ibox_name> <snapshot name> <host name>
-''''
+
+````
+perl ./snaphandle.pl create <ibox_name> <snapshot name> <host name>
+````
+
+### Setting Credentails 
+```
+./set_creds.pl
+````
+Box name, user and password will be asked
+
+
+## Modules in use:
+REST::Client
+JSON
+MIME::Base64
+Data::Dumper
+Switch
+Term::ReadKey
