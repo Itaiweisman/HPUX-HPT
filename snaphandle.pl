@@ -88,7 +88,9 @@ sub CreateSnapshot {
                 }
                 return 0;
                 }
-        return 1;
+        #return 1;
+            %res=%{$result[0][0]};
+            return $res{'id'};
 }
 
 sub SnapMap {
@@ -97,21 +99,22 @@ sub SnapMap {
     my $user=shift;
     my $password=shift;
     my $id=shift;
-    my $snapname=shift;
+    my $snap_id=shift;
     #$DevPword=$passowrd;
-    our $headers = {Accept => 'application/json', Authorization => 'Basic ' . encode_base64($user . ':' . $password)};
-    our $json_data = (
-                 {
-                        volume_id => $id,
-
-                }
+    #our $headers = {Accept => 'application/json', Authorization => 'Basic ' . encode_base64($user . ':' . $password)};
+    my %json_data = (
+                 
+                        "volume_id" => $snap_id
         );
     my $data = encode_json(\%json_data);
 	print "Data is $data \n";
     my $uri="/api/rest/hosts/".$id."/luns";
         my $post = REST::Client->new();
+        $post->addHeader('Content-Type', 'application/json');
+        $post->addHeader('Accept', 'application/json');
+     $post->addHeader('Authorization', 'Basic ' . encode_base64($user . ':' . $password));
         $post->setHost("http://$host");
-        $post->POST ( $uri,$data, $headers);
+        $post->POST ( $uri,$data);
         $ok = eval {$response = from_json($post->responseContent());1};
         if (! $ok ) {
          print "Caught Error - Can't get response from $host \n";
@@ -144,8 +147,12 @@ sub usage {
 }
 usage();
 $id=getInfiniBoxSingleObjectByName('ibox1499','iscsi','123456','volumes','itai');
-print "ID is $id \n";
-CreateSnapshot('ibox1499','iscsi','123456',$id,'hpux-snap');
+$host_id=getInfiniBoxSingleObjectByName('ibox1499','iscsi','123456','hosts','kuku');
+print "ID is $id ; host ID is $host_id \n";
+$snap_id=CreateSnapshot('ibox1499','iscsi','123456',$id,'hpux1-snap');
+print "snap ID is $snap_id \n";
+SnapMap('ibox1499','iscsi','123456',$host_id,$snap_id);
+
 ### Program starts here
 #my ($volume, $action, $host_or_name)=@ARGV;
 #switch ($action) {
