@@ -6,14 +6,8 @@
 #1.0     | Itai Weisman | Gensis     | July 29th, 2018
 ### Usage:
 
-#### For Creating Snapshot
-
-#perl ./snaphandle.pl create <ibox_name> <volume name> <snapshot name>
-
-#### For Mapping Snapshot To Host
-#
-#perl ./snaphandle.pl create <ibox_name> <snapshot name> <host name>
-#
+## perl ./set_creds.pl
+## Will be prompted to enter a box name, user and password 
 
 
 use MIME::Base64;

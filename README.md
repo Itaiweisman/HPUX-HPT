@@ -5,6 +5,7 @@
 Version | Who	| What | When 
 ---- | ---- | ---------- | ------------- 
 1.0	| Itai Weisman | Gensis	| July 29th, 2018 
+1.1	| Itai Weisman | Snap Refresh	| July 29th, 2018 
 ### Usage:
 
 #### For Creating Snapshot 
@@ -12,11 +13,18 @@ Version | Who	| What | When
 perl ./snaphandle.pl create <ibox_name> <volume name> <snapshot name>
 ````
 
+#### For Refreshing a Snapshot 
+````
+perl ./snaphandle.pl refresh <ibox_name> <volume name> <snapshot name>
+````
+
 #### For Mapping Snapshot To Host 
 
 ````
 perl ./snaphandle.pl create <ibox_name> <snapshot name> <host name>
 ````
+
+
 
 ### Setting Credentails 
 ```
