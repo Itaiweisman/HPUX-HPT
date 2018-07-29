@@ -2,20 +2,25 @@
 # Credentials Saver Utility
 ## Written By Itai Weisman, Solution Engineering Team Leader, INFINIDAT.
 ### Change Control
-#Version | Who          | What       | When
-#------- | ------------ | ---------- | -------------
-#1.0     | Itai Weisman | Gensis     | July 29th, 2018
+#Version | Who          | What         | When
+#------- | ------------ | ----------   | -------------
+#1.0     | Itai Weisman | Gensis       | July 29th, 2018
+#1.1     | Itai Weisman | Snap Refresh | July 29th, 2018
 ### Usage:
 #perl ./set_creds.pl
 #Box name, user and password will be asked
 #
 
-
+## Imports
 use REST::Client;
 use JSON;
 use MIME::Base64;
 use Data::Dumper;
 use Switch;
+
+
+## Functions
+## Gets InfiniBox credentials from a file.
 sub get_ibox_creds {
     $ibox=shift;
     $ibox_sec_file="." . $ibox .".sec";
@@ -32,6 +37,9 @@ sub get_ibox_creds {
 
 
 }
+
+
+## Reterive InfiniBox Object ID by its name, can be used for multiple object types (hosts, volumes etc)
 sub getInfiniBoxSingleObjectByName {
         my $host=shift;
         my $user=shift;
@@ -62,6 +70,7 @@ sub getInfiniBoxSingleObjectByName {
                 print  "Response is empty \n";
                 if ($error[0]{'code'}) {
                         print "Caught Error - $error[0]{'message'} \n";
+                        exit();
                 }
                 return {};
                 }
@@ -72,28 +81,48 @@ sub getInfiniBoxSingleObjectByName {
 	#return $result[0][0];
 }
 
+## Creates or refreshes a snapshot, from source or other snapshot.
 
-sub CreateSnapshot {
- 
+sub CreateRefreshSnapshot {
+    my $action=shift;
     my $host=shift;
     my $user=shift;
     my $password=shift;
     my $id=shift;
     my $snapname=shift;
-    #$DevPword=$passowrd;
-    my $headers = {Content-Type => 'application/json',  Authorization => 'Basic ' . encode_base64($user . ':' . $password)};
+    my %json_data;
+    my $uri;
+    #my $headers = {Content-Type => 'application/json',  Authorization => 'Basic ' . encode_base64($user . ':' . $password)};
 	#print "headers are $headers \n";
-    my %json_data = (
+    if ($action eq 'create') {
+     %json_data = (
                         "parent_id" => $id,
                         "name" => $snapname
         );
+    $uri="/api/rest/volumes/";
+
+    }
+    
+    elsif ($action eq 'refresh') {
+         %json_data = (
+                        "source_id" => $id
+        );
+    $snap_id=getInfiniBoxSingleObjectByName($host,$user,$password,'volumes',$snapname);
+    
+    if ($snap_id) {
+    $uri="/api/rest/volumes/". $snap_id . "/refresh?approved=true"; }
+    else {print "Refresh Failed \n"; exit();}
+
+    }
+    
+    else {print "problem \n"; return 0;}
     my $data = encode_json(\%json_data);
 	#print "data is $data \n";
-    my $uri="/api/rest/volumes/";
+    
         my $post = REST::Client->new();
-	$post->addHeader('Content-Type', 'application/json');
-	$post->addHeader('Accept', 'application/json');
-	$post->addHeader('Authorization', 'Basic ' . encode_base64($user . ':' . $password));
+	   $post->addHeader('Content-Type', 'application/json');
+    	$post->addHeader('Accept', 'application/json');
+    	$post->addHeader('Authorization', 'Basic ' . encode_base64($user . ':' . $password));
         $post->setHost("http://$host");
         $post->POST ( $uri,$data);
         $ok = eval {$response = from_json($post->responseContent());1};
@@ -112,7 +141,8 @@ sub CreateSnapshot {
                  print "Response from http://${host}/${uri} is  empty \n";
                 if ($error[0]{'code'}) {
                         #print "Caught Error - $error[0]{'message'} \n";
-                       print "Caught Error - $error[0]{'message'} \n";;
+                       print "Caught Error - $error[0]{'message'} \n";
+                       exit();
 
                 }
                 return 0;
@@ -123,6 +153,8 @@ sub CreateSnapshot {
             return $res{'id'};
 }
 
+
+## Mapping a snapshot(or volume) to a host
 sub SnapMap {
  
     my $host=shift;
@@ -161,29 +193,38 @@ sub SnapMap {
                  print "Response from http://${host}/${uri} is  empty \n";
                 if ($error[0]{'code'}) {
                         #print "Caught Error - $error[0]{'message'} \n";
-                       print "Caught Error - $error[0]{'message'} \n";;
+                       print "Caught Error - $error[0]{'message'} \n";
+                       exit();
 
                 }
                 return 0;
                 }
         return 1;
 }
+
+
+## print usage 
 sub usage {
     print "Usage: \n";
     print "Create a snapshot: \n";
-    print "./snaphandle create <ibox_name> <volume name> <snapshot name> \n";
+    print "perl ./snaphandle.pl create <ibox_name> <volume name> <snapshot name> \n";
     print "Map a snapshot to a host: \n";
-    print "./snaphandle map <ibox_name> <snapshot name> <host name> \n\n\n\n";
+    print "perl ./snaphandle.pl map <ibox_name> <snapshot name> <host name>\n";
+    print "Refresh a snapshot: \n";
+    print "perl ./snaphandle.pl create <ibox_name> <volume name> <snapshot name> \n";
+    
+
+     print "\n\n";
+     exit();
 }
 
 
 ### Program starts here
 my ($box, $action, $item, $item_b)=@ARGV;
-print "action $action box $box item $item item_b $item_b \n";
+#print "action $action box $box item $item item_b $item_b \n";
 usage() if (! $action or ! $box or ! $item or ! $item_b );
 $credi=get_ibox_creds($box);
 %creds=%{$credi};
-#print "creds - $creds{'user'} $creds{'password'} \n";
 
 switch ($action) {
     case "create" {
@@ -191,7 +232,14 @@ switch ($action) {
         $snapshot_name=$item_b;
         $volume_id=getInfiniBoxSingleObjectByName($box,$creds{'user'},$creds{'password'},'volumes',$volume_name);
         print "Creating snapshot <$snapshot_name> to volume <$volume_name> \n";
-        $snap_id=CreateSnapshot($box,$creds{'user'},$creds{'password'},$volume_id,$snapshot_name);
+        $snap_id=CreateRefreshSnapshot('create',$box,$creds{'user'},$creds{'password'},$volume_id,$snapshot_name);
+    }
+    case "refresh" {
+        $volume_name=$item;
+        $snapshot_name=$item_b;
+        $volume_id=getInfiniBoxSingleObjectByName($box,$creds{'user'},$creds{'password'},'volumes',$volume_name);
+        print "Refreshing snapshot <$snapshot_name> from volume <$volume_name> \n";
+        $snap_id=CreateRefreshSnapshot('refresh',$box,$creds{'user'},$creds{'password'},$volume_id,$snapshot_name);
     }
     case "map" {
         $snapshot_name=$item;
