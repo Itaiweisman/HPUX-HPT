@@ -8,7 +8,9 @@ Version | Who	| What | When
 1.1	| Itai Weisman | Snap Refresh	| July 29th, 2018 
 
 ### About
-Host PowerTools and infinishell are currently not provided for HPUX. the Python distribution avaialble on HPUX is also not very stable and do not allow using infinisdk or similar. to mitigate this, I wrote this tool which is avaialble for HPUX releases and written in perl. it uses some perl modules including REST::Client. a compiled and link version (using perl2exe) is also avaiable.
+Host PowerTools and infinishell are currently not provided for HPUX. the Python distribution avaialble on HPUX is also not very stable and do not allow using infinisdk or similar. to mitigate this, I wrote this tool which is avaialble for HPUX releases and written in perl. it uses some perl modules including REST::Client and JSON. a compiled and link version (using perl2exe) is also provided, which allows running this script without installing perl or its modules.
+additional script named "set_creds.pl" is avaialble to create a credentials file with hasehd password.
+
 
 ### Usage:
 
