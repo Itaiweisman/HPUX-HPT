@@ -6,6 +6,10 @@ Version | Who	| What | When
 ---- | ---- | ---------- | ------------- 
 1.0	| Itai Weisman | Gensis	| July 29th, 2018 
 1.1	| Itai Weisman | Snap Refresh	| July 29th, 2018 
+
+### About
+Host PowerTools and infinishell are currently not provided for HPUX. the Python distribution avaialble on HPUX is also not very stable and do not allow using infinisdk or similar. to mitigate this, I wrote this tool which is avaialble for HPUX releases and written in perl. it uses some perl modules including REST::Client. a compiled and link version (using perl2exe) is also avaiable.
+
 ### Usage:
 
 #### For Creating Snapshot 
